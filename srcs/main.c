@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/12 14:57:19 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/13 16:38:01 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int	main(void)
 {
-	printf("Hello from ft_nm\n");
+	ft_printf("Hello from ft_nm using ft_printf\n");
 	return 0;
 }

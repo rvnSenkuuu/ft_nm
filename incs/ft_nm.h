@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/12 14:56:53 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/13 16:34:55 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,5 +14,7 @@
 #define FT_NM_H
 
 #include <stdio.h>
+
+#include "../lib/libft/includes/libft.h"
 
 #endif
