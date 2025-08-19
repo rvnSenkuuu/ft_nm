@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/19 16:38:46 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/19 16:54:27 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 int	init_nm_struct(t_nm *nm, const char *file_name)
 {
+	nm->program_name = "nm";
 	nm->file_name = ft_strdup(file_name);
 	if (!nm->file_name) {
 		perror("Ft_strdup");

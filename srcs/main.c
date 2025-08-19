@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/19 16:39:46 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/19 18:10:39 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ int	ft_nm(const char *file_name)
 		return 1;
 	}
 
-	//Check elf file
+	ret = check_elf_file(&nm);
+	if (ret == 1) {
+		clean_nm_struct(&nm);
+		return 1;
+	}
 
 	clean_nm_struct(&nm);
 	return ret;

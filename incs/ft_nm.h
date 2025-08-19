@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/19 16:39:27 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/19 18:10:22 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/types.h>
@@ -26,15 +27,18 @@
 #include "../lib/libft/includes/libft.h"
 
 #define DEFAULT_FILE "a.out"
+#define ELF_HEADER_MAGIC_SIZE 16
 
 typedef struct {
 	int	fd;
 	char	*file_name;
+	const char	*program_name;
 	void	*file_map;
 	struct stat	file_stat;
 } t_nm;
 
 void	clean_nm_struct(t_nm *nm);
 int	init_nm_struct(t_nm *nm, const char *file_name);
+int	check_elf_file(t_nm *nm);
 
 #endif
