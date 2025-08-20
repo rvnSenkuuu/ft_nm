@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/19 18:10:22 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/20 11:06:13 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@
 #include "../lib/libft/includes/libft.h"
 
 #define DEFAULT_FILE "a.out"
-#define ELF_HEADER_MAGIC_SIZE 16
 
 typedef struct {
 	int	fd;
