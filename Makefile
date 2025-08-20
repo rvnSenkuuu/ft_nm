@@ -6,7 +6,7 @@
 #    By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/12 14:39:41 by tkara2            #+#    #+#              #
-#    Updated: 2025/08/19 18:11:11 by tkara2           ###   ########.fr        #
+#    Updated: 2025/08/20 14:13:49 by tkara2           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ RM      = rm -rf
 
 SRCS    = srcs/main.c \
 		srcs/nm_struct.c \
-		srcs/check_elf.c
+		srcs/check_elf.c \
+		srcs/nm_32_64.c
 INCS    = ./incs/ft_nm.h
 
 OBJSDIR = .objs/

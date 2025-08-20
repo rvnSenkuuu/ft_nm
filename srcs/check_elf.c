@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:09:52 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/20 11:38:57 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/20 13:49:04 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,27 +29,18 @@ static int check_elf_magic(unsigned char *e_ident)
 	return 0;
 }
 
-int	check_elf_file(t_nm *nm)
+int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat)
 {
-	Elf64_Ehdr	*elf_header = (Elf64_Ehdr *)nm->file_map;
-
-	if (nm->file_stat.st_size < EI_NIDENT)
-		goto file_format_error;
+	if (file_stat->st_size < EI_NIDENT)
+		return 1;
 
 	if (check_elf_magic(elf_header->e_ident) != 0)
-		goto file_format_error;
+		return 1;
 
-	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64) {
-		if (nm->file_stat.st_size < (off_t)sizeof(Elf64_Ehdr))
-			goto file_format_error;
-	} else if (elf_header->e_ident[EI_CLASS] == ELFCLASS32) {
-    	if (nm->file_stat.st_size < (off_t)sizeof(Elf32_Ehdr))
-			goto file_format_error;
-	}
+	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64 && file_stat->st_size < (off_t)sizeof(Elf64_Ehdr))
+			return 1;
+	else if (elf_header->e_ident[EI_CLASS] == ELFCLASS32 && file_stat->st_size < (off_t)sizeof(Elf32_Ehdr))
+		return 1;
 
 	return 0;
-
-file_format_error:
-	ft_dprintf(STDERR_FILENO, "%s: %s: file format not recognized\n", nm->program_name, nm->file_name);
-	return 1;
 }
