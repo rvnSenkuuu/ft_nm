@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/20 17:22:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/26 12:15:26 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,14 @@ int	ft_nm(const char *file_name)
 		return 1;
 	}
 
-	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64)
-		ft_nm64(&nm);
+	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64) {
+		ret = ft_nm64(&nm);
+		if (ret != 0) {
+			ft_dprintf(STDERR_FILENO, "%s: %s: no symbols\n", nm.program_name, nm.file_name);
+			clean_nm_struct(&nm);
+			return 1;
+		}
+	}
 	else
 		ft_nm32(&nm);
 
