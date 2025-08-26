@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/26 13:42:06 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/26 18:51:17 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,17 @@ char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *
 	return '?';
 }
 
+void	print_symbols(t_sym_arr *sym_arr)
+{
+	for (size_t i = 0; i < sym_arr->symbol_count; i++) {
+		printf("%016lu %c %s\n", sym_arr[i].value, sym_arr[i].type, sym_arr[i].name);
+	}
+}
+
 int	ft_nm64(t_nm *nm)
 {
 	bool	has_sym = false;
+	t_sym_arr	*sym_arr;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
 
@@ -64,22 +72,32 @@ int	ft_nm64(t_nm *nm)
 		if (current_section->sh_type == SHT_SYMTAB) {
 			has_sym = true;	
 			Elf64_Shdr	*strtab_section = &section_header[current_section->sh_link];
+			Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current_section->sh_offset);
 			char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
 			int	symbol_count = current_section->sh_size / sizeof(Elf64_Sym);
 			
+			sym_arr = malloc(symbol_count * sizeof(*sym_arr));
+			if (!sym_arr) return 2;
+
+			int	arr_counter = 0;
 			for (int j = 0; j < symbol_count; j++) {
-				Elf64_Sym	*symbol = (Elf64_Sym *)(nm->file_map + current_section->sh_offset + j * sizeof(Elf64_Sym));
+				Elf64_Sym	*symbol = &symbols[j];
 				if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
 					continue;
 				
 				char	*symbol_name = symtab_data + symbol->st_name;
 				char	symbol_type = get_symbol_type(symbol, section_header, header);
-				printf("%016lu\t", symbol->st_value);
-				printf("%c\t", symbol_type);
-				printf("%s\n", symbol_name);
+				sym_arr[arr_counter].type = symbol_type;
+				sym_arr[arr_counter].value = symbol->st_value;
+				sym_arr[arr_counter].name = symbol_name;
+				arr_counter++;
 			}
+			sym_arr->symbol_count = arr_counter;
 		}
 	}
+
+	print_symbols(sym_arr);
+	free(sym_arr);
 	if (has_sym == false) return 1;
 	return 0;
 }

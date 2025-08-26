@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/26 12:12:13 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/26 18:32:15 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,15 @@ typedef struct {
 	void	*file_map;
 	struct stat	file_stat;
 } t_nm;
+
+typedef struct
+{
+	char	type;
+	size_t	value;
+	size_t	symbol_count;
+	char	*name;
+} t_sym_arr;
+
 
 int	ft_nm64(t_nm *nm);
 void	ft_nm32(t_nm *nm);
