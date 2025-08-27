@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/20 13:42:05 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:06:56 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,29 +16,17 @@ int	init_nm_struct(t_nm *nm, const char *file_name)
 {
 	nm->program_name = "nm";
 	nm->file_name = ft_strdup(file_name);
-	if (!nm->file_name) {
-		perror("Ft_strdup");
-		return 1;
-	}
+	if (!nm->file_name) return MALLOC_ERR;
 
 	nm->fd = open(nm->file_name, O_RDONLY);
-	if (nm->fd < 0) {
-		perror("Open");
-		return 1;
-	}
+	if (nm->fd < 0) return OPEN_SYSCALL_ERR;
 
-	if (fstat(nm->fd, &nm->file_stat) < 0) {
-		perror("Fstat");
-		return 1;
-	}
+	if (fstat(nm->fd, &nm->file_stat) < 0) return FSTAT_SYSCALL_ERR;
 
 	nm->file_map = mmap(NULL, nm->file_stat.st_size, PROT_READ, MAP_PRIVATE, nm->fd, 0);
-	if (nm->file_map == MAP_FAILED) {
-		perror("Mmap");
-		return 1;
-	}
+	if (nm->file_map == MAP_FAILED) return MMAP_SYSCALL_ERR;
 
-	return 0;
+	return NO_ERR;
 }
 
 void	clean_nm_struct(t_nm *nm)

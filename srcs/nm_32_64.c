@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 12:25:18 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 14:40:35 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ void	handle_symbols(t_sym_arr *sym_arr, size_t symbol_count)
 	}
 }
 
-int	ft_nm64(t_nm *nm)
+t_err_type	ft_nm64(t_nm *nm)
 {
 	bool	has_sym = false;
-	size_t	sym_arr_counter;
+	size_t	sym_arr_counter = 0;
 	t_sym_arr	*sym_arr = NULL;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
@@ -95,9 +95,8 @@ int	ft_nm64(t_nm *nm)
 			int	symbol_count = current_section->sh_size / sizeof(Elf64_Sym);
 			
 			sym_arr = malloc(symbol_count * sizeof(*sym_arr));
-			if (!sym_arr) return 2;
+			if (!sym_arr) return MALLOC_ERR;
 
-			sym_arr_counter = 0;
 			for (int j = 0; j < symbol_count; j++) {
 				Elf64_Sym	*symbol = &symbols[j];
 				if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
@@ -110,15 +109,16 @@ int	ft_nm64(t_nm *nm)
 			}
 		}
 	}
-	if (has_sym == false) return 1;
+	if (has_sym == false) return NO_SYMBOL_ERR;
 	
 	handle_symbols(sym_arr, sym_arr_counter);
 	free(sym_arr);
-	return 0;
+	return NO_ERR;
 }
 
-void	ft_nm32(t_nm *nm)
+t_err_type	ft_nm32(t_nm *nm)
 {
 	(void)nm;
 	ft_dprintf(STDOUT_FILENO, "Todo\n");
+	return NO_ERR;
 }
