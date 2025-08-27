@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 14:40:35 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:12:31 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	handle_symbols(t_sym_arr *sym_arr, size_t symbol_count)
 	}
 }
 
-t_err_type	ft_nm64(t_nm *nm)
+t_err	ft_nm64(t_nm *nm)
 {
 	bool	has_sym = false;
 	size_t	sym_arr_counter = 0;
@@ -116,7 +116,7 @@ t_err_type	ft_nm64(t_nm *nm)
 	return NO_ERR;
 }
 
-t_err_type	ft_nm32(t_nm *nm)
+t_err	ft_nm32(t_nm *nm)
 {
 	(void)nm;
 	ft_dprintf(STDOUT_FILENO, "Todo\n");

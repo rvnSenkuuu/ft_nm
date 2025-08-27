@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:03:15 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:12:53 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	str_to_lower(char *str)
 	}
 }
 
-char	*get_error_type(t_err_type error)
+char	*get_error_type(t_err error)
 {
 	switch (error) {
 		case NO_SYMBOL_ERR: return "No symbols";

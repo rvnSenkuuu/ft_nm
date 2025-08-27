@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:02:26 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:12:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,16 @@ typedef enum {
 	MMAP_SYSCALL_ERR,
 	STAT_FILE_ERR,
 	ELF_FILE_FORMAT_ERR
-} t_err_type;
+} t_err;
 
 void	clean_nm_struct(t_nm *nm);
 int	init_nm_struct(t_nm *nm, const char *file_name);
 int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
-t_err_type	ft_nm64(t_nm *nm);
-t_err_type	ft_nm32(t_nm *nm);
+t_err	ft_nm64(t_nm *nm);
+t_err	ft_nm32(t_nm *nm);
 
 void	swap_symbols(t_sym_arr *a, t_sym_arr *b);
 void	str_to_lower(char *str);
-char	*get_error_type(t_err_type error);
+char	*get_error_type(t_err error);
 
 #endif
