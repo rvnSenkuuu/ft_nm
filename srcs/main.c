@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:03:53 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 17:46:09 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ int	ft_nm(const char *file_name)
 			clean_nm_struct(&nm);
 			return NM_ERR;
 		}
+	} else {
+		ret = ft_nm32(&nm);
+		if (ret != NO_ERR) {
+			ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
+			clean_nm_struct(&nm);
+			return NM_ERR;
+		}
 	}
-	else
-		ft_nm32(&nm);
 
 	clean_nm_struct(&nm);
 	return ret;

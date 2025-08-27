@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:06:56 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 16:41:50 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,12 @@ void	clean_nm_struct(t_nm *nm)
 	if (nm->file_map)
 		munmap(nm->file_map, nm->file_stat.st_size);
 	ft_memset(&nm->file_stat, 0, sizeof(nm->file_stat));
+}
+
+void	clean_sym_struct(t_sym_arr *sym_arr, size_t sym_count)
+{
+	for (size_t i = 0; i < sym_count; i++) {
+		free(sym_arr[i].name_cpy);
+	}
+	free(sym_arr);
 }

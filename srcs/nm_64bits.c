@@ -6,13 +6,13 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:30:15 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 17:42:21 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *header)
+char	get_symbol_type_64bits(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *header)
 {
 	unsigned char	type = ELF64_ST_TYPE(symbol->st_info);
 	unsigned char	bind = ELF64_ST_BIND(symbol->st_info);
@@ -52,24 +52,21 @@ char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *
 	return '?';
 }
 
-void	handle_symbols(t_sym_arr *sym_arr, size_t symbol_count)
+void	handle_symbols_64bits(t_sym_arr *sym_arr, size_t sym_count)
 {
-	for (size_t i = 0; i < symbol_count; i++) {
-		char	*tmp = ft_strtrim(sym_arr[i].name, "_");
-		str_to_lower(tmp);
-		sym_arr[i].name_cpy = tmp;
-	}
-
-	for (size_t i = 0; i < symbol_count - 1; i++) {
-		for (size_t j = 0; j < symbol_count - i - 1; j++) {
+	for (size_t i = 0; i < sym_count - 1; i++) {
+		for (size_t j = 0; j < sym_count - i - 1; j++) {
 			if (ft_strncmp(sym_arr[j].name_cpy, sym_arr[j + 1].name_cpy, ft_strlen(sym_arr[j].name_cpy)) > 0)
 				swap_symbols(&sym_arr[j], &sym_arr[j + 1]);
 		}
 	}
 
-	for (size_t i = 0; i < symbol_count; i++) {
-		printf("%016lu %c %s\n", sym_arr[i].value, sym_arr[i].type, sym_arr[i].name);
-		free(sym_arr[i].name_cpy);
+	for (size_t i = 0; i < sym_count; i++) {
+		if (sym_arr[i].value == 0)
+			printf("                 ");
+		else
+			printf("%016lu ", sym_arr[i].value);
+		printf("%c %s\n", sym_arr[i].type, sym_arr[i].name);
 	}
 }
 
@@ -99,23 +96,18 @@ t_err	ft_nm64(t_nm *nm)
 				if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
 					continue;
 
-				sym_arr[sym_arr_counter].type = get_symbol_type(symbol, section_header, header);
+				sym_arr[sym_arr_counter].type = get_symbol_type_64bits(symbol, section_header, header);
 				sym_arr[sym_arr_counter].value = symbol->st_value;
 				sym_arr[sym_arr_counter].name = symtab_data + symbol->st_name;
+				sym_arr[sym_arr_counter].name_cpy = ft_strtrim(symtab_data + symbol->st_name, "_");
+				str_to_lower(sym_arr[sym_arr_counter].name_cpy);
 				sym_arr_counter++;
 			}
 		}
 	}
 	if (has_sym == false) return NO_SYMBOL_ERR;
 	
-	handle_symbols(sym_arr, sym_arr_counter);
-	free(sym_arr);
-	return NO_ERR;
-}
-
-t_err	ft_nm32(t_nm *nm)
-{
-	(void)nm;
-	ft_dprintf(STDOUT_FILENO, "Todo\n");
+	handle_symbols_64bits(sym_arr, sym_arr_counter);
+	clean_sym_struct(sym_arr, sym_arr_counter);
 	return NO_ERR;
 }
