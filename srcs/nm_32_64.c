@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/26 19:40:27 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 12:25:18 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,26 @@ char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *
 	return '?';
 }
 
-void	print_symbols(t_sym_arr *sym_arr)
+void	handle_symbols(t_sym_arr *sym_arr, size_t symbol_count)
 {
-	for (size_t i = 0; i < sym_arr->symbol_count; i++) {
+	for (size_t i = 0; i < symbol_count - 1; i++) {
+		for (size_t j = 0; j < symbol_count - i - 1; j++) {
+
+			char	*first = ft_strtrim(sym_arr[j].name, "_");
+			char	*second = ft_strtrim(sym_arr[j + 1].name, "_");
+	
+			str_to_lower(first);
+			str_to_lower(second);
+
+			if (ft_strncmp(first, second, ft_strlen(first)) > 0)
+				swap_symbols(&sym_arr[j], &sym_arr[j + 1]);
+
+			free(first);
+			free(second);
+		}
+	}
+
+	for (size_t i = 0; i < symbol_count; i++) {
 		printf("%016lu %c %s\n", sym_arr[i].value, sym_arr[i].type, sym_arr[i].name);
 	}
 }
@@ -62,6 +79,7 @@ void	print_symbols(t_sym_arr *sym_arr)
 int	ft_nm64(t_nm *nm)
 {
 	bool	has_sym = false;
+	size_t	sym_arr_counter;
 	t_sym_arr	*sym_arr = NULL;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
@@ -79,23 +97,22 @@ int	ft_nm64(t_nm *nm)
 			sym_arr = malloc(symbol_count * sizeof(*sym_arr));
 			if (!sym_arr) return 2;
 
-			int	arr_counter = 0;
+			sym_arr_counter = 0;
 			for (int j = 0; j < symbol_count; j++) {
 				Elf64_Sym	*symbol = &symbols[j];
 				if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
 					continue;
 
-				sym_arr[arr_counter].type = get_symbol_type(symbol, section_header, header);
-				sym_arr[arr_counter].value = symbol->st_value;
-				sym_arr[arr_counter].name = symtab_data + symbol->st_name;
-				arr_counter++;
+				sym_arr[sym_arr_counter].type = get_symbol_type(symbol, section_header, header);
+				sym_arr[sym_arr_counter].value = symbol->st_value;
+				sym_arr[sym_arr_counter].name = symtab_data + symbol->st_name;
+				sym_arr_counter++;
 			}
-			sym_arr->symbol_count = arr_counter;
 		}
 	}
 	if (has_sym == false) return 1;
 	
-	print_symbols(sym_arr);
+	handle_symbols(sym_arr, sym_arr_counter);
 	free(sym_arr);
 	return 0;
 }

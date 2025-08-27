@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/26 18:32:15 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 12:20:18 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,19 +36,19 @@ typedef struct {
 	struct stat	file_stat;
 } t_nm;
 
-typedef struct
-{
+typedef struct {
 	char	type;
 	size_t	value;
-	size_t	symbol_count;
 	char	*name;
 } t_sym_arr;
-
 
 int	ft_nm64(t_nm *nm);
 void	ft_nm32(t_nm *nm);
 void	clean_nm_struct(t_nm *nm);
 int	init_nm_struct(t_nm *nm, const char *file_name);
 int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
+
+void	swap_symbols(t_sym_arr *a, t_sym_arr *b);
+void	str_to_lower(char *str);
 
 #endif
