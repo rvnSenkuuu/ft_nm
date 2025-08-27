@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:12:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:24:22 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef struct {
 	char	type;
 	size_t	value;
 	char	*name;
+	char	*name_cpy;
 } t_sym_arr;
 
 typedef enum {

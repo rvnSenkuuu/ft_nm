@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:12:31 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/27 15:30:15 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,25 +54,22 @@ char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *
 
 void	handle_symbols(t_sym_arr *sym_arr, size_t symbol_count)
 {
+	for (size_t i = 0; i < symbol_count; i++) {
+		char	*tmp = ft_strtrim(sym_arr[i].name, "_");
+		str_to_lower(tmp);
+		sym_arr[i].name_cpy = tmp;
+	}
+
 	for (size_t i = 0; i < symbol_count - 1; i++) {
 		for (size_t j = 0; j < symbol_count - i - 1; j++) {
-
-			char	*first = ft_strtrim(sym_arr[j].name, "_");
-			char	*second = ft_strtrim(sym_arr[j + 1].name, "_");
-	
-			str_to_lower(first);
-			str_to_lower(second);
-
-			if (ft_strncmp(first, second, ft_strlen(first)) > 0)
+			if (ft_strncmp(sym_arr[j].name_cpy, sym_arr[j + 1].name_cpy, ft_strlen(sym_arr[j].name_cpy)) > 0)
 				swap_symbols(&sym_arr[j], &sym_arr[j + 1]);
-
-			free(first);
-			free(second);
 		}
 	}
 
 	for (size_t i = 0; i < symbol_count; i++) {
 		printf("%016lu %c %s\n", sym_arr[i].value, sym_arr[i].type, sym_arr[i].name);
+		free(sym_arr[i].name_cpy);
 	}
 }
 
