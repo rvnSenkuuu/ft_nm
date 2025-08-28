@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 19:15:14 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,14 @@
 #include "../lib/libft/includes/libft.h"
 
 #define DEFAULT_FILE "a.out"
+
+typedef struct {
+	bool	opt_a;
+	bool	opt_g;
+	bool	opt_u;
+	bool	opt_r;
+	bool	opt_p;
+} t_opt;
 
 typedef struct {
 	int	fd;
@@ -55,12 +63,13 @@ typedef enum {
 	ELF_FILE_FORMAT_ERR
 } t_err;
 
+void	parse_opt(t_opt *options, int *starting_index, char **argv);
 void	clean_nm_struct(t_nm *nm);
 void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count);
 int	init_nm_struct(t_nm *nm, const char *file_name);
 int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
-t_err	ft_nm64(t_nm *nm);
+t_err	ft_nm64(t_nm *nm, t_opt *options);
 
 void	swap_symbols(t_symbols_info *a, t_symbols_info *b);
 void	str_to_lower(char *str);

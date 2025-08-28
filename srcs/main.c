@@ -6,13 +6,13 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 13:13:05 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 19:16:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-int	ft_nm(const char *file_name)
+int	ft_nm(const char *file_name, t_opt *options)
 {
 	int	ret = 0;
 	t_nm	nm = {0};
@@ -26,7 +26,7 @@ int	ft_nm(const char *file_name)
 	if (ret != NO_ERR) goto err_exit;
 
 	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64) {
-		ret = ft_nm64(&nm);
+		ret = ft_nm64(&nm, options);
 		if (ret != NO_ERR) goto err_exit;
 	} else {
 		ret = ft_nm32(&nm);
@@ -44,15 +44,18 @@ err_exit:
 
 int	main(int argc, char **argv)
 {
+	int	starting_index = 1;
 	int	ret = 0;
-
+	t_opt	options = {0};
+	
+	parse_opt(&options, &starting_index, argv + 1);
 	if (argc == 1) {
-		ret = ft_nm(DEFAULT_FILE);
+		ret = ft_nm(DEFAULT_FILE, &options);
 		return ret;
 	}
 
-	for (int i = 1; i < argc; i++) {
-		ret = ft_nm(argv[i]);
+	for (int i = starting_index; i < argc; i++) {
+		ret = ft_nm(argv[i], &options);
 		if (ret != NO_ERR) continue;
 	}
 

@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 18:56:38 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 
 	for (int j = 0; j < total_symbol_count; j++) {
 		Elf64_Sym	*symbol = &symbols[j];
-		if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
+		if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE ||  symbol->st_name == 0)
 			continue;
 
 		symbol_arr[count].type = get_symbol_type(symbol, section_header, header);
@@ -102,8 +102,9 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	return NO_ERR;
 }
 
-t_err	ft_nm64(t_nm *nm)
+t_err	ft_nm64(t_nm *nm, t_opt *options)
 {
+	(void)options;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
 

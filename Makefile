@@ -6,7 +6,7 @@
 #    By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/12 14:39:41 by tkara2            #+#    #+#              #
-#    Updated: 2025/08/27 17:45:08 by tkara2           ###   ########.fr        #
+#    Updated: 2025/08/28 19:16:33 by tkara2           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,8 @@ SRCS    = srcs/main.c \
 		srcs/check_elf.c \
 		srcs/nm_32bits.c \
 		srcs/nm_64bits.c \
-		srcs/utils.c
+		srcs/utils.c \
+		srcs/options.c
 INCS    = ./incs/ft_nm.h
 
 OBJSDIR = .objs/
