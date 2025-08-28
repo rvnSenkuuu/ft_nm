@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 13:13:17 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ typedef struct {
 	size_t	value;
 	char	*name;
 	char	*name_cpy;
-} t_sym_arr;
+} t_symbols_info;
 
 typedef enum {
 	NO_ERR,
@@ -56,13 +56,13 @@ typedef enum {
 } t_err;
 
 void	clean_nm_struct(t_nm *nm);
-void	clean_sym_struct(t_sym_arr *sym_arr, size_t sym_count);
+void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count);
 int	init_nm_struct(t_nm *nm, const char *file_name);
 int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
 t_err	ft_nm64(t_nm *nm);
 
-void	swap_symbols(t_sym_arr *a, t_sym_arr *b);
+void	swap_symbols(t_symbols_info *a, t_symbols_info *b);
 void	str_to_lower(char *str);
 char	*get_error_type(t_err error);
 

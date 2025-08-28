@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 14:39:34 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64
 	return '?';
 }
 
-static void	sort_symbols(t_sym_arr *symbols, size_t symbols_count)
+static void	sort_symbols(t_symbols_info *symbols, size_t symbols_count)
 {
 	for (size_t i = 0; i < symbols_count - 1; i++) {
 		for (size_t j = 0; j < symbols_count - i - 1; j++) {
@@ -62,7 +62,7 @@ static void	sort_symbols(t_sym_arr *symbols, size_t symbols_count)
 	}
 }
 
-static void	print_symbols(t_sym_arr *symbols, size_t symbols_count)
+static void	print_symbols(t_symbols_info *symbols, size_t symbols_count)
 {
 	for (size_t i = 0; i < symbols_count; i++) {
 		if (symbols[i].value == 0)
@@ -73,7 +73,7 @@ static void	print_symbols(t_sym_arr *symbols, size_t symbols_count)
 	}
 }
 
-static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_sym_arr **sym_arr, size_t *symbol_count)
+static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_symbols_info **sym_arr, size_t *symbol_count)
 {
 	Elf64_Shdr	*strtab_section = &section_header[current->sh_link];
 	Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current->sh_offset);
@@ -82,7 +82,7 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	int	total_symbol_count = current->sh_size / sizeof(Elf64_Sym);
 	char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
 			
-	t_sym_arr	*symbol_arr = malloc(total_symbol_count * sizeof(**sym_arr));
+	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**sym_arr));
 	if (!sym_arr) return MALLOC_ERR;
 
 	for (int j = 0; j < total_symbol_count; j++) {
@@ -110,7 +110,7 @@ t_err	ft_nm64(t_nm *nm)
 	bool	has_symbol = false;
 	t_err	ret_val = 0;
 	size_t	symbol_count = 0;
-	t_sym_arr	*sym_arr = NULL;
+	t_symbols_info	*sym_arr = NULL;
 
 	for (int i = 0; i < header->e_shnum; i++) {
 		Elf64_Shdr	*current_section = &section_header[i];

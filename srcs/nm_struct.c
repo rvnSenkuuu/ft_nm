@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 13:13:24 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	clean_nm_struct(t_nm *nm)
 	ft_memset(&nm->file_stat, 0, sizeof(nm->file_stat));
 }
 
-void	clean_sym_struct(t_sym_arr *sym_arr, size_t sym_count)
+void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count)
 {
 	for (size_t i = 0; i < sym_count; i++) {
 		free(sym_arr[i].name_cpy);

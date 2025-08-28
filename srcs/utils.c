@@ -6,15 +6,15 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 15:12:53 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-void	swap_symbols(t_sym_arr *a, t_sym_arr *b)
+void	swap_symbols(t_symbols_info *a, t_symbols_info *b)
 {
-	t_sym_arr tmp = *a;
+	t_symbols_info tmp = *a;
 	*a = *b;
 	*b = tmp;
 }
