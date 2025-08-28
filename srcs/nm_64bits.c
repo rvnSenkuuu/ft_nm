@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   nm_32_64.c                                         :+:      :+:    :+:   */
+/*   nm_64bits.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 17:42:21 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 14:39:34 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-char	get_symbol_type_64bits(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *header)
+static char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64_Ehdr *header)
 {
 	unsigned char	type = ELF64_ST_TYPE(symbol->st_info);
 	unsigned char	bind = ELF64_ST_BIND(symbol->st_info);
@@ -52,62 +52,79 @@ char	get_symbol_type_64bits(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64
 	return '?';
 }
 
-void	handle_symbols_64bits(t_sym_arr *sym_arr, size_t sym_count)
+static void	sort_symbols(t_sym_arr *symbols, size_t symbols_count)
 {
-	for (size_t i = 0; i < sym_count - 1; i++) {
-		for (size_t j = 0; j < sym_count - i - 1; j++) {
-			if (ft_strncmp(sym_arr[j].name_cpy, sym_arr[j + 1].name_cpy, ft_strlen(sym_arr[j].name_cpy)) > 0)
-				swap_symbols(&sym_arr[j], &sym_arr[j + 1]);
+	for (size_t i = 0; i < symbols_count - 1; i++) {
+		for (size_t j = 0; j < symbols_count - i - 1; j++) {
+			if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) > 0)
+			swap_symbols(&symbols[j], &symbols[j + 1]);
 		}
 	}
+}
 
-	for (size_t i = 0; i < sym_count; i++) {
-		if (sym_arr[i].value == 0)
+static void	print_symbols(t_sym_arr *symbols, size_t symbols_count)
+{
+	for (size_t i = 0; i < symbols_count; i++) {
+		if (symbols[i].value == 0)
 			printf("                 ");
 		else
-			printf("%016lu ", sym_arr[i].value);
-		printf("%c %s\n", sym_arr[i].type, sym_arr[i].name);
+			printf("%016lx ", symbols[i].value);
+		printf("%c %s\n", symbols[i].type, symbols[i].name);
 	}
+}
+
+static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_sym_arr **sym_arr, size_t *symbol_count)
+{
+	Elf64_Shdr	*strtab_section = &section_header[current->sh_link];
+	Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current->sh_offset);
+	
+	int	count = 0;
+	int	total_symbol_count = current->sh_size / sizeof(Elf64_Sym);
+	char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
+			
+	t_sym_arr	*symbol_arr = malloc(total_symbol_count * sizeof(**sym_arr));
+	if (!sym_arr) return MALLOC_ERR;
+
+	for (int j = 0; j < total_symbol_count; j++) {
+		Elf64_Sym	*symbol = &symbols[j];
+		if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
+			continue;
+
+		symbol_arr[count].type = get_symbol_type(symbol, section_header, header);
+		symbol_arr[count].value = symbol->st_value;
+		symbol_arr[count].name = symtab_data + symbol->st_name;
+		symbol_arr[count].name_cpy = ft_strtrim(symtab_data + symbol->st_name, "_");
+		str_to_lower(symbol_arr[count].name_cpy);
+		count++;
+	}
+	*symbol_count = count;
+	*sym_arr = symbol_arr;
+	return NO_ERR;
 }
 
 t_err	ft_nm64(t_nm *nm)
 {
-	bool	has_sym = false;
-	size_t	sym_arr_counter = 0;
-	t_sym_arr	*sym_arr = NULL;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
+
+	bool	has_symbol = false;
+	t_err	ret_val = 0;
+	size_t	symbol_count = 0;
+	t_sym_arr	*sym_arr = NULL;
 
 	for (int i = 0; i < header->e_shnum; i++) {
 		Elf64_Shdr	*current_section = &section_header[i];
 
 		if (current_section->sh_type == SHT_SYMTAB) {
-			has_sym = true;	
-			Elf64_Shdr	*strtab_section = &section_header[current_section->sh_link];
-			Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current_section->sh_offset);
-			char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
-			int	symbol_count = current_section->sh_size / sizeof(Elf64_Sym);
-			
-			sym_arr = malloc(symbol_count * sizeof(*sym_arr));
-			if (!sym_arr) return MALLOC_ERR;
-
-			for (int j = 0; j < symbol_count; j++) {
-				Elf64_Sym	*symbol = &symbols[j];
-				if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE || symbol->st_name == 0)
-					continue;
-
-				sym_arr[sym_arr_counter].type = get_symbol_type_64bits(symbol, section_header, header);
-				sym_arr[sym_arr_counter].value = symbol->st_value;
-				sym_arr[sym_arr_counter].name = symtab_data + symbol->st_name;
-				sym_arr[sym_arr_counter].name_cpy = ft_strtrim(symtab_data + symbol->st_name, "_");
-				str_to_lower(sym_arr[sym_arr_counter].name_cpy);
-				sym_arr_counter++;
-			}
+			has_symbol = true;
+			ret_val = get_symbols(nm, header, section_header, current_section, &sym_arr, &symbol_count);
+			if (ret_val != NO_ERR) return ret_val;
 		}
 	}
-	if (has_sym == false) return NO_SYMBOL_ERR;
+	if (has_symbol == false) return NO_SYMBOL_ERR;
 	
-	handle_symbols_64bits(sym_arr, sym_arr_counter);
-	clean_sym_struct(sym_arr, sym_arr_counter);
+	sort_symbols(sym_arr, symbol_count);
+	print_symbols(sym_arr, symbol_count);
+	clean_sym_struct(sym_arr, symbol_count);
 	return NO_ERR;
 }

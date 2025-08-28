@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/27 17:46:09 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/28 13:13:05 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,38 +19,27 @@ int	ft_nm(const char *file_name)
 	Elf64_Ehdr	*elf_header;
 	
 	ret = init_nm_struct(&nm, file_name);
-	if (ret != NO_ERR) {
-		ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
-		clean_nm_struct(&nm);
-		return NM_ERR;
-	}
+	if (ret != NO_ERR) goto err_exit;
 
 	elf_header = (Elf64_Ehdr *)nm.file_map;
 	ret = check_elf_file(elf_header, &nm.file_stat);
-	if (ret != NO_ERR) {
-		ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
-		clean_nm_struct(&nm);
-		return NM_ERR;
-	}
+	if (ret != NO_ERR) goto err_exit;
 
 	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64) {
 		ret = ft_nm64(&nm);
-		if (ret != NO_ERR) {
-			ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
-			clean_nm_struct(&nm);
-			return NM_ERR;
-		}
+		if (ret != NO_ERR) goto err_exit;
 	} else {
 		ret = ft_nm32(&nm);
-		if (ret != NO_ERR) {
-			ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
-			clean_nm_struct(&nm);
-			return NM_ERR;
-		}
+		if (ret != NO_ERR) goto err_exit;
 	}
 
 	clean_nm_struct(&nm);
 	return ret;
+
+err_exit:
+	ft_dprintf(STDERR_FILENO, "nm: %s: %s\n", file_name, get_error_type(ret));
+	clean_nm_struct(&nm);
+	return NM_ERR;
 }
 
 int	main(int argc, char **argv)
