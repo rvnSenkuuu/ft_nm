@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 19:14:38 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 19:15:04 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 12:30:14 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ void	parse_opt(t_opt *options, int *starting_index, char **argv)
 		else if (ft_strncmp(argv[i], "-p", ft_strlen("-p")) == 0 
 			|| ft_strncmp(argv[i], "--no-sort", ft_strlen("--no-sort")) == 0)
 			options->opt_p = true;
+		else if (argv[i][0] == '-') {
+			fprintf(stderr, "Error: unrecognized option '%s'\n", argv[i]);
+			fprintf(stderr, "Try './ft_nm --help' for more information.\n");
+			exit(1);
+		}
+		else
+			break;
 	}
-	*starting_index = i;
+	*starting_index = i + 1;
 }

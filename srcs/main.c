@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 19:16:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 12:40:31 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,14 +49,17 @@ int	main(int argc, char **argv)
 	t_opt	options = {0};
 	
 	parse_opt(&options, &starting_index, argv + 1);
-	if (argc == 1) {
+	if (argc == starting_index) {
 		ret = ft_nm(DEFAULT_FILE, &options);
 		return ret;
 	}
 
 	for (int i = starting_index; i < argc; i++) {
 		ret = ft_nm(argv[i], &options);
-		if (ret != NO_ERR) continue;
+		if (ret != NO_ERR) {
+			write(STDOUT_FILENO, "\n", sizeof(char));		
+			continue; 
+		}
 	}
 
 	return ret;

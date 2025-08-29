@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 19:15:14 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 11:53:26 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,12 @@ typedef enum {
 	STAT_FILE_ERR,
 	ELF_FILE_FORMAT_ERR
 } t_err;
+
+typedef enum {
+	NO_SORT,
+	REVERSE_SORT,
+	NORMAL_SORT
+} t_symbols_sort;
 
 void	parse_opt(t_opt *options, int *starting_index, char **argv);
 void	clean_nm_struct(t_nm *nm);

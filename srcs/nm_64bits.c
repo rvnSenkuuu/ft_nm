@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 18:56:38 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 12:37:57 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,12 +52,29 @@ static char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64
 	return '?';
 }
 
-static void	sort_symbols(t_symbols_info *symbols, size_t symbols_count)
+t_symbols_sort	get_sorting_type(t_opt *options)
 {
-	for (size_t i = 0; i < symbols_count - 1; i++) {
-		for (size_t j = 0; j < symbols_count - i - 1; j++) {
-			if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) > 0)
-			swap_symbols(&symbols[j], &symbols[j + 1]);
+	if (options->opt_r == true) return REVERSE_SORT;
+	if (options->opt_p == true) return NO_SORT;
+	if (options->opt_r == false && options->opt_p == false) return NORMAL_SORT;
+	return -1;
+}
+
+static void	sort_symbols(t_symbols_info *symbols, size_t symbols_count, t_symbols_sort sort)
+{
+	if (sort == NORMAL_SORT) {
+		for (size_t i = 0; i < symbols_count - 1; i++) {
+			for (size_t j = 0; j < symbols_count - i - 1; j++) {
+				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) > 0)
+					swap_symbols(&symbols[j], &symbols[j + 1]);
+			}
+		}
+	} else {
+		for (size_t i = 0; i < symbols_count - 1; i++) {
+			for (size_t j = 0; j < symbols_count - i - 1; j++) {
+				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) < 0)
+					swap_symbols(&symbols[j], &symbols[j + 1]);
+			}
 		}
 	}
 }
@@ -73,7 +90,7 @@ static void	print_symbols(t_symbols_info *symbols, size_t symbols_count)
 	}
 }
 
-static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_symbols_info **sym_arr, size_t *symbol_count)
+static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_symbols_info **symbols_output, size_t *symbol_count)
 {
 	Elf64_Shdr	*strtab_section = &section_header[current->sh_link];
 	Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current->sh_offset);
@@ -82,8 +99,8 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	int	total_symbol_count = current->sh_size / sizeof(Elf64_Sym);
 	char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
 			
-	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**sym_arr));
-	if (!sym_arr) return MALLOC_ERR;
+	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
+	if (!symbols_output) return MALLOC_ERR;
 
 	for (int j = 0; j < total_symbol_count; j++) {
 		Elf64_Sym	*symbol = &symbols[j];
@@ -98,7 +115,7 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 		count++;
 	}
 	*symbol_count = count;
-	*sym_arr = symbol_arr;
+	*symbols_output = symbol_arr;
 	return NO_ERR;
 }
 
@@ -111,21 +128,31 @@ t_err	ft_nm64(t_nm *nm, t_opt *options)
 	bool	has_symbol = false;
 	t_err	ret_val = 0;
 	size_t	symbol_count = 0;
-	t_symbols_info	*sym_arr = NULL;
+	t_symbols_info	*symbols = NULL;
 
 	for (int i = 0; i < header->e_shnum; i++) {
 		Elf64_Shdr	*current_section = &section_header[i];
 
 		if (current_section->sh_type == SHT_SYMTAB) {
 			has_symbol = true;
-			ret_val = get_symbols(nm, header, section_header, current_section, &sym_arr, &symbol_count);
+			ret_val = get_symbols(nm, header, section_header, current_section, &symbols, &symbol_count);
 			if (ret_val != NO_ERR) return ret_val;
 		}
 	}
 	if (has_symbol == false) return NO_SYMBOL_ERR;
+
+	switch (get_sorting_type(options)) {
+		case NORMAL_SORT:
+			sort_symbols(symbols, symbol_count, NORMAL_SORT);
+			break;
+		case REVERSE_SORT:
+			sort_symbols(symbols, symbol_count, REVERSE_SORT);
+			break;
+		case NO_SORT: break;
+		default: break;
+	}
 	
-	sort_symbols(sym_arr, symbol_count);
-	print_symbols(sym_arr, symbol_count);
-	clean_sym_struct(sym_arr, symbol_count);
+	print_symbols(symbols, symbol_count);
+	clean_sym_struct(symbols, symbol_count);
 	return NO_ERR;
 }
