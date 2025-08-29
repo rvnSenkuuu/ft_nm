@@ -6,13 +6,13 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 13:33:58 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_nm.h"
 
-int	init_nm_struct(t_nm *nm, const char *file_name)
+int	init_nm_struct(t_nm *nm, const char *file_name, t_opt *options)
 {
 	nm->program_name = "nm";
 	nm->file_name = ft_strdup(file_name);
@@ -25,6 +25,8 @@ int	init_nm_struct(t_nm *nm, const char *file_name)
 
 	nm->file_map = mmap(NULL, nm->file_stat.st_size, PROT_READ, MAP_PRIVATE, nm->fd, 0);
 	if (nm->file_map == MAP_FAILED) return MMAP_SYSCALL_ERR;
+
+	nm->options = *options;
 
 	return NO_ERR;
 }

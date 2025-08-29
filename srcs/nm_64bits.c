@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 12:37:57 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 13:57:35 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,33 +52,6 @@ static char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64
 	return '?';
 }
 
-t_symbols_sort	get_sorting_type(t_opt *options)
-{
-	if (options->opt_r == true) return REVERSE_SORT;
-	if (options->opt_p == true) return NO_SORT;
-	if (options->opt_r == false && options->opt_p == false) return NORMAL_SORT;
-	return -1;
-}
-
-static void	sort_symbols(t_symbols_info *symbols, size_t symbols_count, t_symbols_sort sort)
-{
-	if (sort == NORMAL_SORT) {
-		for (size_t i = 0; i < symbols_count - 1; i++) {
-			for (size_t j = 0; j < symbols_count - i - 1; j++) {
-				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) > 0)
-					swap_symbols(&symbols[j], &symbols[j + 1]);
-			}
-		}
-	} else {
-		for (size_t i = 0; i < symbols_count - 1; i++) {
-			for (size_t j = 0; j < symbols_count - i - 1; j++) {
-				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) < 0)
-					swap_symbols(&symbols[j], &symbols[j + 1]);
-			}
-		}
-	}
-}
-
 static void	print_symbols(t_symbols_info *symbols, size_t symbols_count)
 {
 	for (size_t i = 0; i < symbols_count; i++) {
@@ -88,6 +61,20 @@ static void	print_symbols(t_symbols_info *symbols, size_t symbols_count)
 			printf("%016lx ", symbols[i].value);
 		printf("%c %s\n", symbols[i].type, symbols[i].name);
 	}
+}
+
+static bool	filter_symbols(Elf64_Sym *symbol, t_opt *options)
+{
+	if (options->opt_a == false && ((ELF64_ST_TYPE(symbol->st_info) == STT_SECTION)
+		|| (ELF64_ST_TYPE(symbol->st_info) == STT_FILE)))
+		return false;
+
+	if (options->opt_g == true && ELF64_ST_BIND(symbol->st_info) == STB_LOCAL)
+		return false;
+
+	if (options->opt_u == true && symbol->st_shndx != SHN_UNDEF) return false;
+
+	return true;
 }
 
 static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_symbols_info **symbols_output, size_t *symbol_count)
@@ -104,8 +91,8 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 
 	for (int j = 0; j < total_symbol_count; j++) {
 		Elf64_Sym	*symbol = &symbols[j];
-		if (ELF64_ST_TYPE(symbol->st_info) == STT_FILE ||  symbol->st_name == 0)
-			continue;
+
+		if (filter_symbols(symbol, &(nm->options)) == false) continue;
 
 		symbol_arr[count].type = get_symbol_type(symbol, section_header, header);
 		symbol_arr[count].value = symbol->st_value;
@@ -119,9 +106,8 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	return NO_ERR;
 }
 
-t_err	ft_nm64(t_nm *nm, t_opt *options)
+t_err	ft_nm64(t_nm *nm)
 {
-	(void)options;
 	Elf64_Ehdr	*header = (Elf64_Ehdr *)nm->file_map;
 	Elf64_Shdr	*section_header = (Elf64_Shdr *)(nm->file_map + header->e_shoff);
 
@@ -141,7 +127,7 @@ t_err	ft_nm64(t_nm *nm, t_opt *options)
 	}
 	if (has_symbol == false) return NO_SYMBOL_ERR;
 
-	switch (get_sorting_type(options)) {
+	switch (get_sorting_type(&(nm->options))) {
 		case NORMAL_SORT:
 			sort_symbols(symbols, symbol_count, NORMAL_SORT);
 			break;

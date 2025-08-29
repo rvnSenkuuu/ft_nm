@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/28 16:08:48 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 13:57:22 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,31 @@ char	*get_error_type(t_err error)
 		case ELF_FILE_FORMAT_ERR: return "Elf file format error";
 		default: return "Unreachable";
 	}
+}
+
+void	sort_symbols(t_symbols_info *symbols, size_t symbols_count, t_symbols_sort sort)
+{
+	if (sort == NORMAL_SORT) {
+		for (size_t i = 0; i < symbols_count - 1; i++) {
+			for (size_t j = 0; j < symbols_count - i - 1; j++) {
+				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) > 0)
+					swap_symbols(&symbols[j], &symbols[j + 1]);
+			}
+		}
+	} else {
+		for (size_t i = 0; i < symbols_count - 1; i++) {
+			for (size_t j = 0; j < symbols_count - i - 1; j++) {
+				if (ft_strncmp(symbols[j].name_cpy, symbols[j + 1].name_cpy, ft_strlen(symbols[j].name_cpy)) < 0)
+					swap_symbols(&symbols[j], &symbols[j + 1]);
+			}
+		}
+	}
+}
+
+t_symbols_sort	get_sorting_type(t_opt *options)
+{
+	if (options->opt_r == true) return REVERSE_SORT;
+	if (options->opt_p == true) return NO_SORT;
+	if (options->opt_r == false && options->opt_p == false) return NORMAL_SORT;
+	return -1;
 }

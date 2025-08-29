@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 11:53:26 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 13:57:30 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ typedef struct {
 	const char	*program_name;
 	void	*file_map;
 	struct stat	file_stat;
+	t_opt	options;
 } t_nm;
 
 typedef struct {
@@ -72,13 +73,15 @@ typedef enum {
 void	parse_opt(t_opt *options, int *starting_index, char **argv);
 void	clean_nm_struct(t_nm *nm);
 void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count);
-int	init_nm_struct(t_nm *nm, const char *file_name);
+int	init_nm_struct(t_nm *nm, const char *file_name, t_opt *options);
 int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
-t_err	ft_nm64(t_nm *nm, t_opt *options);
+t_err	ft_nm64(t_nm *nm);
 
+void	sort_symbols(t_symbols_info *symbols, size_t symbols_count, t_symbols_sort sort);
 void	swap_symbols(t_symbols_info *a, t_symbols_info *b);
 void	str_to_lower(char *str);
+t_symbols_sort	get_sorting_type(t_opt *options);
 char	*get_error_type(t_err error);
 
 #endif
