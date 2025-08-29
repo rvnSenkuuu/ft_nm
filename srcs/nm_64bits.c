@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 13:57:35 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/29 18:29:34 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,10 +129,10 @@ t_err	ft_nm64(t_nm *nm)
 
 	switch (get_sorting_type(&(nm->options))) {
 		case NORMAL_SORT:
-			sort_symbols(symbols, symbol_count, NORMAL_SORT);
+			merge_sort(symbols, 0, symbol_count - 1, false);
 			break;
 		case REVERSE_SORT:
-			sort_symbols(symbols, symbol_count, REVERSE_SORT);
+			merge_sort(symbols, 0, symbol_count - 1, true);
 			break;
 		case NO_SORT: break;
 		default: break;
