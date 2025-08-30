@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 18:51:32 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 12:39:00 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,13 +42,16 @@ char	*get_error_type(t_err error)
 	}
 }
 
-void	merge(t_symbols_info *symbols, int left, int mid, int right, bool reverse)
+t_err	merge(t_symbols_info *symbols, int left, int mid, int right, bool reverse)
 {
 	int	i, j, k;
 	int	first_half = mid - left + 1;
 	int	second_half = right - mid;
 
-	t_symbols_info	left_symbols[first_half], right_symbols[second_half];
+	t_symbols_info	*left_symbols = malloc(first_half * sizeof(*left_symbols));
+	t_symbols_info	*right_symbols = malloc(second_half * sizeof(*right_symbols));
+
+	if (!left_symbols || !right_symbols) return MALLOC_ERR;
 
 	for (i = 0; i < first_half; i++)
 		left_symbols[i] = symbols[left + i];
@@ -59,7 +62,7 @@ void	merge(t_symbols_info *symbols, int left, int mid, int right, bool reverse)
 	j = 0;
 	k = left;
 	while (i < first_half && j < second_half) {
-		int	comparison = ft_strncmp(left_symbols[i].name_cpy, right_symbols[j].name_cpy, ft_strlen(left_symbols[i].name_cpy));
+		int	comparison = ft_strcmp(left_symbols[i].name_cpy, right_symbols[j].name_cpy);
 		bool	start_left = (reverse == true) ? (comparison > 0) : (comparison < 0);
 
 		if (start_left) {
@@ -82,16 +85,25 @@ void	merge(t_symbols_info *symbols, int left, int mid, int right, bool reverse)
 		j++;
 		k++;
 	}
+
+	free(left_symbols);
+	free(right_symbols);
+	return NO_ERR;
 }
 
-void	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse)
+t_err	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse)
 {
+	t_err	ret = 0;
+
 	if (left < right) {
 		int	mid = left + (right - left) / 2;
 		merge_sort(symbols, left, mid, reverse);
 		merge_sort(symbols, mid + 1, right, reverse);
-		merge(symbols, left, mid, right, reverse);
+		ret = merge(symbols, left, mid, right, reverse);
+		if (ret != NO_ERR) return ret;
 	}
+
+	return NO_ERR;
 }
 
 t_symbols_sort	get_sorting_type(t_opt *options)

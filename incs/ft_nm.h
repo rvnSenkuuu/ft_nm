@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 18:30:43 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 12:39:18 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
 t_err	ft_nm64(t_nm *nm);
 
-void	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse);
+t_err	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse);
 void	swap_symbols(t_symbols_info *a, t_symbols_info *b);
 void	str_to_lower(char *str);
 t_symbols_sort	get_sorting_type(t_opt *options);

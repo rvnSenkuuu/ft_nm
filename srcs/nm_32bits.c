@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 18:30:22 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 12:41:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ t_err	ft_nm32(t_nm *nm)
 	Elf32_Shdr	*section_header = (Elf32_Shdr *)(nm->file_map + header->e_shoff);
 
 	bool	has_symbol = false;
-	t_err	ret_val = 0;
+	t_err	ret = 0;
 	size_t	symbol_count = 0;
 	t_symbols_info	*symbols = NULL;
 
@@ -122,18 +122,20 @@ t_err	ft_nm32(t_nm *nm)
 
 		if (current_section->sh_type == SHT_SYMTAB) {
 			has_symbol = true;
-			ret_val = get_symbols(nm, header, section_header, current_section, &symbols, &symbol_count);
-			if (ret_val != NO_ERR) return ret_val;
+			ret = get_symbols(nm, header, section_header, current_section, &symbols, &symbol_count);
+			if (ret != NO_ERR) return ret;
 		}
 	}
 	if (has_symbol == false) return NO_SYMBOL_ERR;
 	
 	switch (get_sorting_type(&(nm->options))) {
 		case NORMAL_SORT:
-			merge_sort(symbols, 0, symbol_count - 1, false);
+			ret = merge_sort(symbols, 0, symbol_count - 1, false);
+			if (ret != NO_ERR) return ret;
 			break;
 		case REVERSE_SORT:
-			merge_sort(symbols, 0, symbol_count - 1, true);
+			ret = merge_sort(symbols, 0, symbol_count - 1, true);
+			if (ret != NO_ERR) return ret;
 			break;
 		case NO_SORT: break;
 		default: break;
