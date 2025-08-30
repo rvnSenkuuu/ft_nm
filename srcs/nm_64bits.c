@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 12:40:54 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 13:20:34 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,13 @@ static char	get_symbol_type(Elf64_Sym *symbol, Elf64_Shdr *section_header, Elf64
 	return '?';
 }
 
-static void	print_symbols(t_symbols_info *symbols, size_t symbols_count)
-{
-	for (size_t i = 0; i < symbols_count; i++) {
-		if (symbols[i].value == 0)
-			printf("                 ");
-		else
-			printf("%016lx ", symbols[i].value);
-		printf("%c %s\n", symbols[i].type, symbols[i].name);
-	}
-}
-
 static bool	filter_symbols(Elf64_Sym *symbol, t_opt *options)
 {
+	Elf64_Sym	empty_symbol = {0};
+
+	if (ft_memcmp(symbol, &empty_symbol, sizeof(*symbol)) == 0)
+		return false;
+
 	if (options->opt_a == false && ((ELF64_ST_TYPE(symbol->st_info) == STT_SECTION)
 		|| (ELF64_ST_TYPE(symbol->st_info) == STT_FILE)))
 		return false;
@@ -140,7 +134,7 @@ t_err	ft_nm64(t_nm *nm)
 		default: break;
 	}
 	
-	print_symbols(symbols, symbol_count);
+	print_symbols(symbols, symbol_count, nm->is_64bits);
 	clean_sym_struct(symbols, symbol_count);
 	return NO_ERR;
 }

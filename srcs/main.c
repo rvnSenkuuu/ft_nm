@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 13:34:35 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 13:12:52 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	ft_nm(const char *file_name, t_opt *options)
 	if (ret != NO_ERR) goto err_exit;
 
 	if (elf_header->e_ident[EI_CLASS] == ELFCLASS64) {
+		nm.is_64bits = true;
 		ret = ft_nm64(&nm);
 		if (ret != NO_ERR) goto err_exit;
 	} else {

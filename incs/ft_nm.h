@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 12:39:18 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 13:19:16 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ typedef struct {
 } t_opt;
 
 typedef struct {
+	bool	is_64bits;
 	int	fd;
 	char	*file_name;
 	const char	*program_name;
@@ -79,9 +80,10 @@ int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
 t_err	ft_nm64(t_nm *nm);
 
-t_err	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse);
 void	swap_symbols(t_symbols_info *a, t_symbols_info *b);
 void	str_to_lower(char *str);
+void	print_symbols(t_symbols_info *symbols, size_t symbols_count, bool is_64bits);
+t_err	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse);
 t_symbols_sort	get_sorting_type(t_opt *options);
 char	*get_error_type(t_err error);
 

@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 12:39:00 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/08/30 13:18:56 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,4 +112,19 @@ t_symbols_sort	get_sorting_type(t_opt *options)
 	if (options->opt_p == true) return NO_SORT;
 	if (options->opt_r == false && options->opt_p == false) return NORMAL_SORT;
 	return UNREACHABLE;
+}
+
+void	print_symbols(t_symbols_info *symbols, size_t symbols_count, bool is_64bits)
+{
+	for (size_t i = 0; i < symbols_count; i++) {
+		if (is_64bits == false && symbols[i].value == 0)
+			printf("         ");
+		else if (is_64bits == true && symbols[i].value == 0)
+			printf("                 ");
+		else if (is_64bits == false)
+			printf("%08x ", (unsigned int)symbols[i].value);
+		else
+			printf("%016lx ", symbols[i].value);
+		printf("%c %s\n", symbols[i].type, symbols[i].name);
+	}
 }
