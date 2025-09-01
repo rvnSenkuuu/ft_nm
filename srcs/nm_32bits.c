@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 13:20:10 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/01 18:09:21 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,21 +77,26 @@ static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_heade
 	Elf32_Sym	*symbols = (Elf32_Sym *)(nm->file_map + current->sh_offset);
 	
 	int	count = 0;
-	int	total_symbol_count = current->sh_size / sizeof(Elf32_Sym);
+	size_t	total_symbol_count = current->sh_size / sizeof(Elf32_Sym);
 	char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
 			
 	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
-	if (!symbols_output) return MALLOC_ERR;
+	if (!symbol_arr) return MALLOC_ERR;
 
-	for (int j = 0; j < total_symbol_count; j++) {
+	for (size_t j = 0; j < total_symbol_count; j++) {
 		Elf32_Sym	*symbol = &symbols[j];
 
+		if (symbol->st_name >= strtab_section->sh_size) continue;
 		if (filter_symbols(symbol, &(nm->options)) == false) continue;
 
 		symbol_arr[count].type = get_symbol_type(symbol, section_header, header);
 		symbol_arr[count].value = symbol->st_value;
 		symbol_arr[count].name = symtab_data + symbol->st_name;
 		symbol_arr[count].name_cpy = ft_strtrim(symtab_data + symbol->st_name, "_");
+		if (!symbol_arr[count].name_cpy) {
+			clean_sym_struct(symbol_arr, count + 1);
+			return MALLOC_ERR;
+		}
 		str_to_lower(symbol_arr[count].name_cpy);
 		count++;
 	}
@@ -99,7 +104,6 @@ static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_heade
 	*symbols_output = symbol_arr;
 	return NO_ERR;
 }
-
 
 t_err	ft_nm32(t_nm *nm)
 {
@@ -118,21 +122,24 @@ t_err	ft_nm32(t_nm *nm)
 			has_symbol = true;
 			ret = get_symbols(nm, header, section_header, current_section, &symbols, &symbol_count);
 			if (ret != NO_ERR) return ret;
+			break;
 		}
 	}
 	if (has_symbol == false) return NO_SYMBOL_ERR;
 	
-	switch (get_sorting_type(&(nm->options))) {
-		case NORMAL_SORT:
+	if (symbol_count > 1) {
+		switch (get_sorting_type(&(nm->options))) {
+			case NORMAL_SORT:
 			ret = merge_sort(symbols, 0, symbol_count - 1, false);
 			if (ret != NO_ERR) return ret;
 			break;
-		case REVERSE_SORT:
+			case REVERSE_SORT:
 			ret = merge_sort(symbols, 0, symbol_count - 1, true);
 			if (ret != NO_ERR) return ret;
 			break;
-		case NO_SORT: break;
-		default: break;
+			case NO_SORT: break;
+			default: break;
+		}
 	}
 
 	print_symbols(symbols, symbol_count, nm->is_64bits);

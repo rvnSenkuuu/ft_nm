@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:39:15 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 13:12:52 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/01 16:17:12 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	main(int argc, char **argv)
 
 	for (int i = starting_index; i < argc; i++) {
 		ret = ft_nm(argv[i], &options);
-		if (ret != NO_ERR) {
+		if (ret != NO_ERR && ret != NM_ERR) {
 			write(STDOUT_FILENO, "\n", sizeof(char));		
 			continue; 
 		}
