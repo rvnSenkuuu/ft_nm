@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/12 14:56:23 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 14:08:08 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 16:59:01 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ typedef enum {
 	FSTAT_SYSCALL_ERR,
 	MMAP_SYSCALL_ERR,
 	STAT_FILE_ERR,
+	ELF_FILE_MAGIC_HEADER_ERR,
 	ELF_FILE_FORMAT_ERR,
 	ELF_FILE_OFFSET_ERR,
 	ELF_FILE_SECTION_ERR,
@@ -78,7 +79,7 @@ void	parse_opt(t_opt *options, int *starting_index, char **argv);
 void	clean_nm_struct(t_nm *nm);
 void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count);
 int	init_nm_struct(t_nm *nm, const char *file_name, t_opt *options);
-int	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
+t_err	check_elf_file(Elf64_Ehdr *elf_header, struct stat *file_stat);
 t_err	ft_nm32(t_nm *nm);
 t_err	ft_nm64(t_nm *nm);
 

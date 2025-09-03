@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 16:06:38 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 17:04:21 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,12 +73,12 @@ static bool	filter_symbols(Elf64_Sym *symbol, t_opt *options)
 
 static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_header, Elf64_Shdr *current, t_symbols_info **symbols_output, size_t *symbol_count)
 {
-	Elf64_Shdr	*strtab_section = &section_header[current->sh_link];
+	Elf64_Shdr	*symtab_section = &section_header[current->sh_link];
 	Elf64_Sym	*symbols = (Elf64_Sym *)(nm->file_map + current->sh_offset);
 	
 	int	count = 0;
 	size_t	total_symbol_count = current->sh_size / sizeof(Elf64_Sym);
-	char	*symtab_data = (char *)(nm->file_map + strtab_section->sh_offset);
+	char	*symtab_data = (char *)(nm->file_map + symtab_section->sh_offset);
 			
 	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
 	if (!symbol_arr) return MALLOC_ERR;
@@ -86,7 +86,7 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	for (size_t j = 0; j < total_symbol_count; j++) {
 		Elf64_Sym	*symbol = &symbols[j];
 
-		if (symbol->st_name >= strtab_section->sh_size) continue;
+		if (symbol->st_name >= symtab_section->sh_size) continue;
 		if (filter_symbols(symbol, &(nm->options)) == false) continue;
 
 		symbol_arr[count].type = get_symbol_type(symbol, section_header, header);
