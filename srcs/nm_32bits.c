@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/01 18:09:21 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 12:17:34 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,12 @@ static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_heade
 t_err	ft_nm32(t_nm *nm)
 {
 	Elf32_Ehdr	*header = (Elf32_Ehdr *)nm->file_map;
+	if (header->e_shoff >= (size_t)nm->file_stat.st_size)
+		return ELF_FILE_OFFSET_ERR;
+
 	Elf32_Shdr	*section_header = (Elf32_Shdr *)(nm->file_map + header->e_shoff);
+	if (header->e_shstrndx >= header->e_shnum || section_header[header->e_shstrndx].sh_type != SHT_STRTAB)
+		return ELF_FILE_SECTION_ERR;
 
 	bool	has_symbol = false;
 	t_err	ret = 0;

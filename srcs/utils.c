@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/30 13:18:56 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 14:08:13 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,8 @@ char	*get_error_type(t_err error)
 		case MMAP_SYSCALL_ERR: return "Mmap syscall failed";
 		case STAT_FILE_ERR: return "Stat file error";
 		case ELF_FILE_FORMAT_ERR: return "Elf file format error";
+		case ELF_FILE_OFFSET_ERR: return "Elf file offset error";
+		case ELF_FILE_SECTION_ERR: return "Bad section error";
 		default: return "Unreachable";
 	}
 }

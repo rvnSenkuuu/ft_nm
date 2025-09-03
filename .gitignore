@@ -1,3 +1,4 @@
 .vscode
 .objs
 ft_nm
+tests/*.c
