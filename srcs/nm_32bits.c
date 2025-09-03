@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 12:17:34 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 16:06:48 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,8 +130,8 @@ t_err	ft_nm32(t_nm *nm)
 			break;
 		}
 	}
-	if (has_symbol == false) return NO_SYMBOL_ERR;
-	
+
+	if (has_symbol == false) return NO_SYMBOL_ERR;	
 	if (symbol_count > 1) {
 		switch (get_sorting_type(&(nm->options))) {
 			case NORMAL_SORT:
