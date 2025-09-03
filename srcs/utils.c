@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 12:19:35 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 16:59:25 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/03 18:29:42 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,13 @@ t_err	merge_sort(t_symbols_info *symbols, int left, int right, bool reverse)
 
 	if (left < right) {
 		int	mid = left + (right - left) / 2;
-		merge_sort(symbols, left, mid, reverse);
-		merge_sort(symbols, mid + 1, right, reverse);
+
+		ret = merge_sort(symbols, left, mid, reverse);
+		if (ret != NO_ERR) return ret;
+
+		ret = merge_sort(symbols, mid + 1, right, reverse);
+		if (ret != NO_ERR) return ret;
+
 		ret = merge(symbols, left, mid, right, reverse);
 		if (ret != NO_ERR) return ret;
 	}
