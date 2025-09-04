@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/04 13:11:01 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/04 18:03:02 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,13 @@ static bool	filter_symbols(Elf32_Sym *symbol, t_opt *options)
 	return true;
 }
 
-static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_header, Elf32_Shdr *current, t_symbols_info **symbols_output, size_t *symbol_count)
+static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_header, Elf32_Shdr *current_section, t_symbols_info **symbols_output, size_t *symbol_count)
 {
-	Elf32_Shdr	*symtab_section = &section_header[current->sh_link];
-	Elf32_Sym	*symbols = (Elf32_Sym *)(nm->file_map + current->sh_offset);
+	Elf32_Shdr	*symtab_section = &section_header[current_section->sh_link];
+	Elf32_Sym	*symbols = (Elf32_Sym *)(nm->file_map + current_section->sh_offset);
 	
 	int	count = 0;
-	size_t	total_symbol_count = current->sh_size / sizeof(Elf32_Sym);
+	size_t	total_symbol_count = current_section->sh_size / sizeof(Elf32_Sym);
 	char	*symtab_data = (char *)(nm->file_map + symtab_section->sh_offset);
 			
 	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
