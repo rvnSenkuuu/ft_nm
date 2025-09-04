@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 18:22:43 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/04 13:10:07 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,12 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 	int	count = 0;
 	size_t	total_symbol_count = current->sh_size / sizeof(Elf64_Sym);
 	char	*symtab_data = (char *)(nm->file_map + symtab_section->sh_offset);
-			
+
 	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
 	if (!symbol_arr) return MALLOC_ERR;
 
-	for (size_t j = 0; j < total_symbol_count; j++) {
-		Elf64_Sym	*symbol = &symbols[j];
+	for (size_t i = 0; i < total_symbol_count; i++) {
+		Elf64_Sym	*symbol = &symbols[i];
 
 		if (symbol->st_name >= symtab_section->sh_size) continue;
 		if (filter_symbols(symbol, &(nm->options)) == false) continue;
@@ -122,6 +122,8 @@ t_err	ft_nm64(t_nm *nm)
 
 	for (int i = 0; i < header->e_shnum; i++) {
 		Elf64_Shdr	*current_section = &section_header[i];
+		if (current_section->sh_offset + current_section->sh_size > (size_t)nm->file_stat.st_size)
+			return ELF_FILE_OFFSET_ERR;
 
 		if (current_section->sh_type == SHT_SYMTAB) {
 			has_symbol = true;

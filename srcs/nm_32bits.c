@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 18:22:54 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/04 13:11:01 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,8 @@ static t_err	get_symbols(t_nm *nm, Elf32_Ehdr *header, Elf32_Shdr *section_heade
 	t_symbols_info	*symbol_arr = malloc(total_symbol_count * sizeof(**symbols_output));
 	if (!symbol_arr) return MALLOC_ERR;
 
-	for (size_t j = 0; j < total_symbol_count; j++) {
-		Elf32_Sym	*symbol = &symbols[j];
+	for (size_t i = 0; i < total_symbol_count; i++) {
+		Elf32_Sym	*symbol = &symbols[i];
 
 		if (symbol->st_name >= symtab_section->sh_size) continue;
 		if (filter_symbols(symbol, &(nm->options)) == false) continue;
