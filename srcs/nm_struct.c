@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 16:38:30 by tkara2            #+#    #+#             */
-/*   Updated: 2025/08/29 18:15:21 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/05 13:22:18 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	clean_nm_struct(t_nm *nm)
 
 void	clean_sym_struct(t_symbols_info *sym_arr, size_t sym_count)
 {
-	for (size_t i = 0; i < sym_count; i++) {
+	for (size_t i = 0; i <= sym_count; i++) {
 		free(sym_arr[i].name_cpy);
 	}
 	free(sym_arr);
