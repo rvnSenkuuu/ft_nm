@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/20 14:09:08 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/05 13:23:27 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/05 13:31:06 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ static t_err	get_symbols(t_nm *nm, Elf64_Ehdr *header, Elf64_Shdr *section_heade
 		symbol_arr[count].name = symtab_data + symbol->st_name;
 		symbol_arr[count].name_cpy = ft_strtrim(symtab_data + symbol->st_name, "_");
 		if (!symbol_arr[count].name_cpy) {
-			clean_sym_struct(symbol_arr, count);
+			clean_sym_struct(symbol_arr, count + 1);
 			return MALLOC_ERR;
 		}
 		str_to_lower(symbol_arr[count].name_cpy);

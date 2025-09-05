@@ -6,7 +6,7 @@
 /*   By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/19 18:09:52 by tkara2            #+#    #+#             */
-/*   Updated: 2025/09/03 17:01:37 by tkara2           ###   ########.fr       */
+/*   Updated: 2025/09/05 13:28:21 by tkara2           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ static t_err check_elf_magic(unsigned char *e_ident)
 		return ELF_FILE_MAGIC_HEADER_ERR;
 	
 	if (e_ident[EI_VERSION] != EV_CURRENT)
+		return ELF_FILE_MAGIC_HEADER_ERR;
+
+	if (e_ident[EI_OSABI] != ELFOSABI_SYSV && e_ident[EI_OSABI] != ELFOSABI_NONE)
 		return ELF_FILE_MAGIC_HEADER_ERR;
 
 	return NO_ERR;
