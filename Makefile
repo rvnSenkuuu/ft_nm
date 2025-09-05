@@ -6,13 +6,13 @@
 #    By: tkara2 <tkara2@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/08/12 14:39:41 by tkara2            #+#    #+#              #
-#    Updated: 2025/08/28 19:16:33 by tkara2           ###   ########.fr        #
+#    Updated: 2025/09/05 13:52:40 by tkara2           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME    = ft_nm
 CC      = cc
-CFLAGS  = -Wall -Werror -Wextra -Iincs -I$(LIBFT_PATH) -MMD -MP -finline-functions
+CFLAGS  = -Wall -Werror -Wextra -O2 -Iincs -I$(LIBFT_PATH) -MMD -MP
 RM      = rm -rf
 
 SRCS    = srcs/main.c \
